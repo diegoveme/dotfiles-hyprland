@@ -1,0 +1,8 @@
+*.bak-*
+.cache/
+# wallpapers personales (pesados): no versionar
+.config/wallpapers/*
+!.config/wallpapers/tokyo-night-gradient.png
+
+# symlink de estado runtime (lo recrea wallpaper.sh)
+.config/hypr/current-wallpaper
