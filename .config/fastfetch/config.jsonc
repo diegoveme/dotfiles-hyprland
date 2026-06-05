@@ -1,0 +1,118 @@
+{
+  // ========================= LOGO SETTINGS =========================
+  "logo": {
+    "type": "file",                         // Show a custom ASCII logo instead of the default
+    "source": "/home/diegoveme/.config/fastfetch/ascii.txt", // Path to your ASCII file
+    "color": {
+      "1": "bright_magenta"                // Color applied to ASCII (index-based)
+    }
+  },
+
+  // ========================= GLOBAL DISPLAY SETTINGS =========================
+  "display": {
+    "separator": " ♡ "                     // Separator between KEY and VALUE
+  },
+
+  // ========================= MODULES ORDER =========================
+  "modules": [
+    // ========== TITLE ==========
+    {
+      "type": "title",                     // Shows username@hostname
+      "keyColor": "bright_magenta",        // Color for the key (title)
+      "outputColor": "bright_cyan"         // Color for the value (title text)
+    },
+
+    // Divider line under title
+    {
+      "type": "separator",
+      "string": "♡  ♡  ♡  ♡"              // Custom separator string "string": "────────────────────────────────────────"
+    },
+
+    // ========== MAIN SYSTEM INFO ==========
+    {
+      "type": "os",                        // Operating System
+      "keyColor": "bright_magenta",
+      "outputColor": "bright_cyan"
+    },
+    {
+      "type": "host",                      // Laptop model
+      "keyColor": "bright_magenta",
+      "outputColor": "bright_cyan"
+    },
+    {
+      "type": "kernel",                    // Kernel version
+      "keyColor": "bright_magenta",
+      "outputColor": "bright_cyan"
+    },
+    {
+      "type": "uptime",                    // How long the system has been running
+      "keyColor": "bright_magenta",
+      "outputColor": "bright_cyan"
+    },
+
+    // ========== DISPLAY INFO ==========
+    {
+      "type": "display",                   // Resolution, refresh rate, scaling
+      "keyColor": "bright_magenta",
+      "outputColor": "bright_cyan"
+    },
+
+    // ========== TERMINAL INFO ==========
+    {
+      "type": "terminal",                  // Current terminal
+      "keyColor": "bright_magenta",
+      "outputColor": "bright_cyan"
+    },
+
+    // ========== HARDWARE ==========
+    {
+      "type": "cpu",                       // CPU model
+      "keyColor": "bright_magenta",
+      "outputColor": "bright_cyan"
+    },
+    {
+      "type": "gpu",                       // GPU(s) — integrated & discrete
+      "keyColor": "bright_magenta",
+      "outputColor": "bright_cyan"
+    },
+    {
+      "type": "memory",                    // RAM usage
+      "keyColor": "bright_magenta",
+      "outputColor": "bright_cyan"
+    },
+    {
+      "type": "disk",                      // Disk usage (main drive)
+      "keyColor": "bright_magenta",
+      "outputColor": "bright_cyan"
+    },
+
+    // ========== NETWORK / POWER ==========
+    {
+      "type": "localip",                   // Local IP address
+      "keyColor": "bright_magenta",
+      "outputColor": "bright_cyan"
+    },
+    {
+      "type": "battery",                   // Battery percentage and status
+      "keyColor": "bright_magenta",
+      "outputColor": "bright_cyan"
+    },
+
+    // ========== SYSTEM REGION / LANGUAGE ==========
+   {
+      "type": "locale",                    // System language/locale
+      "keyColor": "bright_magenta",
+      "outputColor": "bright_cyan"
+    },
+
+    // Blank line before color palette
+    {
+      "type": "break"
+    },
+
+    // ========== COLOR BLOCKS ==========
+    {
+      "type": "colors"                     // Shows the 16 terminal colors
+    }
+  ]
+}
