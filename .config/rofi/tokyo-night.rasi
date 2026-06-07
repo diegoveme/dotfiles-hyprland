@@ -1,0 +1,75 @@
+/* Rofi — Tokyo Night theme */
+
+* {
+    bg:        #1a1b26;
+    bg-alt:    #24283b;
+    fg:        #c0caf5;
+    fg-muted:  #565f89;
+    accent:    #7aa2f7;
+    urgent:    #f7768e;
+
+    background-color: transparent;
+    text-color:       @fg;
+}
+
+window {
+    transparency:     "real";
+    background-color: rgba(26, 27, 38, 0.72);
+    border:           2px solid;
+    border-color:     @accent;
+    border-radius:    14px;
+    width:            640px;
+    location:         center;
+    anchor:           center;
+}
+
+mainbox {
+    padding:  16px;
+    spacing:  12px;
+}
+
+inputbar {
+    background-color: @bg-alt;
+    border-radius:    10px;
+    padding:          12px 16px;
+    spacing:          10px;
+    children:         [ prompt, entry ];
+}
+
+prompt {
+    text-color: @accent;
+}
+
+entry {
+    placeholder:       "Search…";
+    placeholder-color: @fg-muted;
+    cursor:            text;
+}
+
+listview {
+    lines:        8;
+    columns:      1;
+    fixed-height: false;
+    scrollbar:    false;
+    spacing:      4px;
+}
+
+element {
+    padding:       10px 14px;
+    spacing:       12px;
+    border-radius: 10px;
+}
+
+element selected {
+    background-color: @accent;
+    text-color:       @bg;
+}
+
+element-icon {
+    size:             24px;
+    vertical-align:   0.5;
+}
+
+element-text {
+    vertical-align: 0.5;
+}
