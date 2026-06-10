@@ -1,0 +1,11 @@
+[SddmGreeterTheme]
+Name=Tokyo Lock
+Description=Tokyo Night lock-screen style greeter
+Author=diegoveme
+License=MIT
+Type=sddm-theme
+Version=1.0
+MainScript=Main.qml
+ConfigFile=theme.conf
+Theme-Id=tokyo-lock
+Theme-API=2.0
