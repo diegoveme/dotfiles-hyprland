@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+# keybinds — shows all keyboard shortcuts of the Hyprland desktop.
+# Type 'keybinds' in any terminal.
+
+# Colors (Tokyo Night, truecolor)
+ACC=$'\033[38;2;122;162;247m'   # blue  (headers)
+KEY=$'\033[38;2;158;206;106m'   # green (keys)
+TXT=$'\033[38;2;192;202;245m'   # text
+MUT=$'\033[38;2;86;95;137m'     # muted
+B=$'\033[1m'; R=$'\033[0m'
+
+hdr() { printf "\n${ACC}${B}  %s${R}\n${MUT}  ────────────────────────────────────────────${R}\n" "$1"; }
+row() { printf "  ${KEY}%-26s${R} ${TXT}%s${R}\n" "$1" "$2"; }
+
+printf "\n${ACC}${B}  ⌨  KEYBOARD SHORTCUTS — Hyprland${R}   ${MUT}(Super = Windows key)${R}\n"
+
+hdr "Apps and system"
+row "Super + Space"            "App launcher (rofi)"
+row "Super + Return"           "Open terminal"
+row "Super + E"                "File manager"
+row "Super + Esc"              "System menu (shutdown/lock…)"
+row "Super + L"                "Lock screen"
+row "Super + Ctrl + Space"     "Change wallpaper"
+row "Super + , / Super+Shift+," "Dismiss 1 / all notifications"
+
+hdr "Windows"
+row "Super + W"                "Close window"
+row "Super + T"                "Float / back to tiling"
+row "Super + H"                "Hide / show floaters"
+row "Super + F"                "Fullscreen"
+row "Super + G"                "Group windows"
+row "Super + arrows"           "Move focus"
+row "Super + Shift + arrows"   "Swap (move) window"
+row "Super + Alt + arrows"     "Resize window"
+row "Alt + Tab"                "Cycle windows"
+row "Super + drag"             "Move (left click) / resize (right click)"
+
+hdr "Workspaces"
+row "Super + 1-0"              "Go to workspace 1-10"
+row "Super + Shift + 1-0"      "Move window to that workspace"
+row "Super + Tab / Shift+Tab"  "Next / prev workspace (hold to spam)"
+row "Super + scroll"           "Switch workspace with the mouse"
+row "Super + S"                "Scratchpad (show/hide)"
+row "Super + Alt + S"          "Send window to the scratchpad"
+
+hdr "Screenshots · Recording · OCR"
+row "Super + Shift + S"        "Capture area → saved + clipboard"
+row "Super + Shift + R"        "Capture full screen → saved + clipboard"
+row "Super + Alt + R"          "Record region (with audio) — repeat to stop"
+row "Super + Alt + Shift + R"  "Record full screen"
+row "Super + Shift + O"        "OCR: extract text from a region"
+
+hdr "Zoom"
+row "Super + = / Super + -"    "Zoom in / out (follows the cursor)"
+row "Super + Ctrl + scroll"    "Zoom with external mouse"
+row "Super + Ctrl + 0"         "Reset zoom"
+
+hdr "Monitors"
+row "Super + Ctrl + S"         "Cycle scaling (1 → 1.25 → 1.5 → 2)"
+row "Super + Ctrl + M"         "Mirror / extend external monitor"
+row "Super + Ctrl + D"         "Turn laptop panel off / on"
+
+hdr "Multimedia (Fn keys)"
+row "Vol +/- and Mute"         "Volume (with OSD)"
+row "Brightness +/-"           "Screen brightness (with OSD)"
+row "Play / Next / Prev"       "Playback control"
+
+printf "\n${MUT}  Tip: edit your shortcuts in ~/.config/hypr/hyprland.lua${R}\n\n"
