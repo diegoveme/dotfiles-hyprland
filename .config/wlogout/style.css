@@ -1,0 +1,55 @@
+/* wlogout — Tokyo Night theme */
+
+* {
+    background-image: none;
+    box-shadow: none;
+}
+
+window {
+    font-family: 'JetBrainsMono Nerd Font', monospace;
+    font-size: 16pt;
+    color: #c0caf5;
+    background-color: rgba(26, 27, 38, 0.6);
+}
+
+button {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 22%;
+    background-color: rgba(36, 40, 59, 0.7);
+    border: 2px solid rgba(122, 162, 247, 0.25);
+    border-radius: 28px;
+    margin: 12px;
+    color: #c0caf5;
+    transition: all 0.25s ease-in-out;
+}
+
+/* Don't pre-highlight the focused (first) button when the menu opens.
+   Highlight only on real mouse hover. */
+button:focus {
+    background-size: 22%;
+    background-color: rgba(36, 40, 59, 0.7);
+    border-color: rgba(122, 162, 247, 0.25);
+    box-shadow: none;
+    outline: none;
+}
+
+button:hover {
+    background-size: 40%;
+    background-color: rgba(122, 162, 247, 0.18);
+    border-color: #7aa2f7;
+    box-shadow: 0 0 14px 2px rgba(122, 162, 247, 0.35);
+}
+
+#shutdown  { background-image: image(url("./icons/power.png")); }
+#shutdown:hover  { background-image: image(url("./icons/power-hover.png")); }
+#logout    { background-image: image(url("./icons/logout.png")); }
+#logout:hover    { background-image: image(url("./icons/logout-hover.png")); }
+#reboot    { background-image: image(url("./icons/restart.png")); }
+#reboot:hover    { background-image: image(url("./icons/restart-hover.png")); }
+#lock      { background-image: image(url("./icons/lock.png")); }
+#lock:hover      { background-image: image(url("./icons/lock-hover.png")); }
+#hibernate { background-image: image(url("./icons/hibernate.png")); }
+#hibernate:hover { background-image: image(url("./icons/hibernate-hover.png")); }
+#suspend   { background-image: image(url("./icons/suspend.png")); }
+#suspend:hover   { background-image: image(url("./icons/suspend-hover.png")); }
