@@ -13,7 +13,7 @@ Unified theme throughout: **Tokyo Night**.
 | Folder               | What it is                                                          |
 |----------------------|--------------------------------------------------------------------|
 | `.config/hypr`       | Hyprland (Lua), lock, idle, wallpaper, scripts and monitors        |
-| `.config/waybar`     | Bar: 10 workspaces · CPU · RAM · temp · audio · network · battery   |
+| `.config/waybar`     | Bar: 10 workspaces · CPU · RAM · temp · audio · Bluetooth · network · battery |
 | `.config/btop`       | Full-screen system monitor                                         |
 | `.config/rofi`       | App launcher and wallpaper picker                                  |
 | `.config/wlogout`    | Graphical logout menu (Super+Esc)                                  |
@@ -93,9 +93,11 @@ The touchpad also does **3-finger horizontal swipe → switch workspace**.
 
 - **Left:** 10 workspaces — current as a dot, in-use ones in a soft blue, empty
   ones dimmed.
-- **Right:** CPU · RAM · temp · audio · network · battery · tray. CPU/RAM/temp
-  open `btop` on click; **clicking the network icon opens the Wi-Fi menu**
-  (`impala`, for the `iwd` backend) in a floating terminal.
+- **Right:** CPU · RAM · temp · audio · Bluetooth · network · battery · tray.
+  CPU/RAM/temp open `btop` on click; **clicking the network icon opens the
+  Wi-Fi menu** (`impala`, for the `iwd` backend) and **clicking the Bluetooth
+  icon opens the Bluetooth menu** (`bluetui`) — both in a terminal. The
+  Bluetooth icon turns green when a device is connected.
 
 ## Wallpapers
 
@@ -153,6 +155,7 @@ sudo pacman -S --needed \
     hyprland waybar btop kitty rofi-wayland \
     hyprlock hypridle hyprpaper dunst swayosd \
     grim slurp wl-clipboard libnotify brightnessctl playerctl impala \
+    bluez bluez-utils \
     wf-recorder tesseract tesseract-data-eng tesseract-data-spa jq \
     fastfetch ttf-jetbrains-mono-nerd noto-fonts-emoji \
     sddm weston \
@@ -166,6 +169,15 @@ asus-linux **g14** repo (the AUR build is unsupported). Add the repo's GPG key,
 append `[g14] Server = https://arch.asus-linux.org` to `/etc/pacman.conf`, then
 `sudo pacman -Suy asusctl rog-control-center`. The `asusd` service starts on
 its own via udev. **ROG Control Center** is the GUI for it (in the app launcher).
+
+The Bluetooth menu uses **`bluetui`** (the TUI companion to `impala`). Install it
+from its official release binary:
+
+```sh
+curl -sL -o bluetui \
+  https://github.com/pythops/bluetui/releases/latest/download/bluetui-x86_64-linux-musl
+chmod +x bluetui && sudo install -m 755 bluetui /usr/local/bin/bluetui
+```
 
 ## Installation
 

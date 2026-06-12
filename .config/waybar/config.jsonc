@@ -10,7 +10,7 @@
   "margin-right": 10,
   "modules-left": ["hyprland/workspaces"],
   "modules-center": ["clock"],
-  "modules-right": ["cpu", "memory", "temperature", "pulseaudio", "network", "battery", "tray"],
+  "modules-right": ["cpu", "memory", "temperature", "pulseaudio", "bluetooth", "network", "battery", "tray"],
 
   "hyprland/workspaces": {
     "on-click": "activate",
@@ -73,6 +73,17 @@
     "scroll-step": 5,
     "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
     "tooltip-format": "{desc} — {volume}%"
+  },
+
+  "bluetooth": {
+    "format": "󰂯",
+    "format-disabled": "󰂲",
+    "format-off": "󰂲",
+    "format-connected": "󰂱 {num_connections}",
+    "tooltip-format": "{controller_alias}\n{status}\nClick to manage devices",
+    "tooltip-format-connected": "{controller_alias}\n{num_connections} connected\n{device_enumerate}\nClick to manage devices",
+    "tooltip-format-enumerate-connected": "{device_alias}",
+    "on-click": "/home/diegoveme/.config/hypr/scripts/toggle-app.sh bt-menu 'rfkill unblock bluetooth; kitty --class bt-menu -e bluetui'"
   },
 
   "network": {

@@ -227,12 +227,23 @@ state and `hyprctl eval 'hl.…'` to act (Lua syntax). All notify via
 - **Note:** changing `persistent-workspaces` needs a **full waybar restart**
   (`reload_style_on_change` only reloads the CSS).
 
-**Right:** `cpu · memory · temperature · pulseaudio · network · battery · tray`.
+**Right:** `cpu · memory · temperature · pulseaudio · bluetooth · network · battery · tray`.
 
 - CPU/RAM/temp **click → toggle btop** (class `sysmon`).
+- Bluetooth **click → toggle the Bluetooth menu** (`bluetui`, class `bt-menu`).
+  The icon is muted when off and **turns green when a device is connected**
+  (`format-connected` + `#bluetooth.connected` CSS). Hover lists connected
+  devices. `on-click` runs `rfkill unblock bluetooth; ` first so a soft-blocked
+  adapter is re-enabled before the menu opens.
 - Network **click → toggle the wifi menu** (`impala`, class `wifi-menu`) — see
   [§13](#13-network-iwd--impala). Hover shows ESSID + IP.
-- Both open **tiled** (no float rule), by preference.
+- All open **tiled** (no float rule), by preference.
+
+**Bluetooth backend:** `bluez`/`bluez-utils` (the `bluetooth.service` is enabled
+and starts on boot). The menu uses **`bluetui`** — the TUI companion to `impala`,
+by the same author (pythops). It is **not** in the official repos; it is installed
+from its release binary into `/usr/local/bin` (see README), per the
+official-install-method preference, not via pacman/AUR.
 
 **The toggle (`toggle-app.sh`) and its race fix — important:**
 
