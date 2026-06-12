@@ -110,14 +110,16 @@ workspaces, fades, zoomFactor). Tuned for quick-but-smooth motion.
 
 ### Gestures
 
-Two touchpad gestures are declared:
+Two working touchpad gestures (native Hyprland gesture engine):
 
-- **2-finger pinch → cursor zoom.**
+- **2-finger pinch → zoom** in/out, continuous and anchored to the cursor
+  (live `cursorZoom`).
 - **3-finger horizontal swipe → switch workspace.**
 
-**Neither currently fires** because the touchpad is misclassified as a mouse
-(see [§16](#16-known-issues--pending)). They're harmless and kept (with a NOTE in
-the config) for when that's fixed.
+Note on what's *not* possible: a **2-finger swipe** can't be a gesture — libinput
+treats 2 fingers as scroll, so only pinch (2 fingers) and 3+-finger swipes are
+real gestures. And `cursorZoom`'s continuous mode needs a pinch scale, so a
+swipe can only do stepped zoom. Hence pinch is the native, fluid touchpad zoom.
 
 ### Window rules
 
@@ -400,13 +402,6 @@ with custom icons in `~/.config/wlogout/icons/`.
 
 ## 16. Known issues & pending
 
-- **Touchpad pinch-zoom (open):** the ELAN1203 touchpad (`04F3:307A`, i2c) is
-  classified by Hyprland as a **mouse**, not a touchpad (it shows under
-  `hyprctl devices` → `.mice[]`, with no touchpad section). Pinch/swipe gestures
-  need a real touchpad classification, so the `cursor_zoom` pinch gesture never
-  fires. Possible paths: a libinput/hwdb quirk to reclassify the device, or
-  `hid-multitouch` vs `elan_i2c`. Meanwhile, zoom works by keyboard
-  (`Super+=/-`) and external mouse (`Super+Ctrl+scroll`).
 - **Fn keys slow for the first seconds after boot:** the `asus-nb-wmi` module
   loads a bit late. Mitigated by `/etc/modules-load.d/asus-nb-wmi.conf` (loads it
   early via systemd). The improvement is marginal because the keys also need

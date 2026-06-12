@@ -67,10 +67,10 @@ hl.env("QT_STYLE_OVERRIDE", "kvantum")
 -- More responsive scroll (helps with touchpad zoom)
 hl.config({ binds = { scroll_event_delay = 0 } })
 
--- Touchpad gesture: 2-finger pinch → cursor zoom.
--- NOTE: inert for now — the ELAN1203 touchpad is seen as a mouse, so gestures
--- don't fire (see DOCUMENTATION.md §16). Kept for when that's fixed.
-hl.gesture({ fingers = 2, direction = "pinch", action = "cursor_zoom" })
+-- Touchpad zoom: 2-finger pinch → zoom in/out, continuous and anchored to the
+-- cursor (Hyprland's native live cursorZoom). Pinch out = in, pinch in = out.
+hl.gesture({ fingers = 2, direction = "pinchout", action = "cursorZoom", mode = "live" })
+hl.gesture({ fingers = 2, direction = "pinchin",  action = "cursorZoom", mode = "live" })
 
 -- Blur (frosted glass) on the launcher and the bar
 hl.layer_rule({ match = { namespace = "rofi" },   blur = true })
@@ -201,7 +201,6 @@ hl.config({
 })
 
 -- Touchpad gesture: 3-finger horizontal swipe → switch workspace.
--- Same caveat as the pinch above: inert until the touchpad is reclassified.
 hl.gesture({
     fingers = 3,
     direction = "horizontal",

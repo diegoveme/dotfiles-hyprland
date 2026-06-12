@@ -53,6 +53,7 @@ row "Super + Shift + O"        "OCR: extract text from a region"
 hdr "Zoom"
 row "Super + = / Super + -"    "Zoom in / out (follows the cursor)"
 row "Super + Ctrl + scroll"    "Zoom with external mouse"
+row "2-finger pinch"           "Zoom in / out (touchpad, continuous)"
 row "Super + Ctrl + 0"         "Reset zoom"
 
 hdr "Monitors"

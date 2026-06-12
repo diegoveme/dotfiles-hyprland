@@ -59,7 +59,10 @@ Screenshots are saved to `~/Pictures/Screenshots/` and also copied to the clipbo
 |------------------------|------------------------------------------|
 | `Super + =` / `Super + -` | Zoom in / out                         |
 | `Super + Ctrl + scroll`| Zoom in / out with the mouse             |
+| 2-finger pinch         | Zoom in / out on the touchpad (continuous) |
 | `Super + Ctrl + 0`     | Reset zoom                               |
+
+The touchpad also does **3-finger horizontal swipe → switch workspace**.
 
 ### Windows
 | Shortcut               | Action                                   |
