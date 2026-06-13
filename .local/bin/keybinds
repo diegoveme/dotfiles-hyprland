@@ -61,6 +61,9 @@ row "Super + Ctrl + S"         "Cycle scaling (1 → 1.25 → 1.5 → 2)"
 row "Super + Ctrl + M"         "Mirror / extend external monitor"
 row "Super + Ctrl + D"         "Turn laptop panel off / on"
 
+hdr "Audio"
+row "Super + Alt + M"          "AirPods: toggle music (hi-fi) / call (mic on)"
+
 hdr "Multimedia (Fn keys)"
 row "Vol +/- and Mute"         "Volume (with OSD)"
 row "Brightness +/-"           "Screen brightness (with OSD)"

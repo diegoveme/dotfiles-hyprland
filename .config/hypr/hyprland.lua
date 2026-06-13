@@ -272,6 +272,9 @@ hl.bind(mainMod .. " + CTRL + 0",          hl.dsp.exec_cmd("/home/diegoveme/.con
 hl.bind(mainMod .. " + CTRL + mouse_up",   hl.dsp.exec_cmd("/home/diegoveme/.config/hypr/scripts/zoom.sh in"))
 hl.bind(mainMod .. " + CTRL + mouse_down", hl.dsp.exec_cmd("/home/diegoveme/.config/hypr/scripts/zoom.sh out"))
 
+-- AirPods mic toggle: music (A2DP hi-fi) <-> call (HFP, AirPods mic on)
+hl.bind(mainMod .. " + ALT + M", hl.dsp.exec_cmd("/home/diegoveme/.config/hypr/scripts/airpods-mic.sh"))
+
 -- Monitor management
 hl.bind(mainMod .. " + CTRL + S", hl.dsp.exec_cmd("/home/diegoveme/.config/hypr/scripts/monitor-scale.sh"))     -- cycle scaling
 hl.bind(mainMod .. " + CTRL + M", hl.dsp.exec_cmd("/home/diegoveme/.config/hypr/scripts/monitor-mirror.sh"))    -- mirror/extend

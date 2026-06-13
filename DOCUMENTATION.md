@@ -431,6 +431,45 @@ ear or in the case reports `-1` and is shown as `—`. The `on-click` opens the
 same `bluetui` menu as the Bluetooth icon. `bleak` is installed via pip into the
 venv (the official Python way), not pacman/AUR.
 
+### AirPods audio: hi-fi vs microphone (the call-quality problem)
+
+**The problem.** Classic Bluetooth audio has two mutually-exclusive profiles:
+**A2DP** (stereo, AAC/SBC — high fidelity, *output only*) and **HFP/HSP**
+(adds the mic, but the whole link drops to **mono, ~telephone quality**). You
+can't run both. By default WirePlumber auto-switches the headset to HFP the
+instant any app opens the mic (a call, Discord, a meeting), so the music/voice
+you *hear* collapses to mono for the entire call.
+
+**Why AirPods specifically can't do both.** On Apple devices, AirPods keep A2DP
+hi-fi output while sending the mic over Apple's proprietary **AACP** channel —
+that's how macOS/iOS get "both at once". That channel is closed/encrypted and
+**not exposed to Linux** (verified: the AirPods advertise only `Audio Sink`,
+`Advanced Audio Distribution`, `Handsfree` + two Apple `Vendor specific` UUIDs;
+**no LE Audio** services — `LE.Connected: no`). The laptop's own adapter *does*
+support LE Audio (Realtek RTL8852B, `cis-central/peripheral`), so an open
+LE-Audio headset could do hi-fi+mic — but the AirPods won't speak it.
+
+**The choice made here — keep hi-fi, use the laptop mic:**
+
+- `.config/wireplumber/wireplumber.conf.d/50-bluetooth-no-autoswitch.conf` sets
+  `bluetooth.autoswitch-to-headset-profile = false` → the AirPods **never**
+  auto-drop to HFP; they stay in A2DP hi-fi. (Verify: `wpctl settings
+  bluetooth.autoswitch-to-headset-profile` → `false`.)
+- The **laptop mic** (`alsa_input.pci-…analog-stereo`) is the default input, so
+  calls still capture your voice while the AirPods stay hi-fi.
+
+**On-demand mic — `Super+Alt+M`** (`scripts/airpods-mic.sh`): toggles the
+AirPods card between `a2dp-sink` (music: hi-fi, laptop mic) and
+`headset-head-unit` (call: AirPods mic on, audio mono for that call), restoring
+the laptop mic when it switches back. Use it only when you need the AirPods mic
+itself (e.g. away from the laptop). Notifies on each switch.
+
+> **Premium features (separate, optional):** AirPods ANC/transparency/in-ear
+> detection can be unlocked on Linux with **LibrePods** + the Apple DeviceID
+> trick (`DeviceID = bluetooth:004C:0000:0000` in `/etc/bluetooth/main.conf`).
+> It does **not** fix the call-audio tradeoff above — that path is still
+> Apple-proprietary. Not installed here; noted for reference.
+
 ---
 
 ## 14. ASUS power (asusctl)

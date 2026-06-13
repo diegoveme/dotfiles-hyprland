@@ -124,6 +124,24 @@ python3 -m venv venv && ./venv/bin/pip install bleak
 systemctl --user enable --now airstatus.service
 ```
 
+### AirPods audio in calls (hi-fi vs mic)
+
+Classic Bluetooth can't send hi-fi audio **and** capture the mic at the same
+time — A2DP (stereo, AAC) is output-only; the moment an app records, a headset
+normally flips to HFP, which drops the whole call to mono "telephone" quality.
+AirPods do hi-fi+mic together only through an Apple-proprietary path that isn't
+exposed to Linux, so this setup **keeps the AirPods permanently in hi-fi A2DP**
+and uses the **laptop mic** for calls:
+
+- WirePlumber's auto-switch is disabled in
+  `.config/wireplumber/wireplumber.conf.d/50-bluetooth-no-autoswitch.conf`
+  (`bluetooth.autoswitch-to-headset-profile = false`).
+- The laptop mic is the default input.
+
+When you actually need the AirPods mic (e.g. away from the laptop), press
+**`Super + Alt + M`** (`scripts/airpods-mic.sh`) to toggle into call mode
+(HFP, AirPods mic on, audio mono for that call); press again to return to hi-fi.
+
 ## Wallpapers
 
 - Change them with **`Super + Ctrl + Space`** (picker with thumbnails).
