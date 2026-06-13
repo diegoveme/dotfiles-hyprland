@@ -578,6 +578,44 @@ sudo efibootmgr -b <id> -B   # done for the 3 phantom ids
 - ⚠️ **Never delete the GRUB entry.** There is no other OS installed (those were
   just stale NVRAM variables); the second disk `nvme0n1` is empty.
 
+### UEFI boot reliability — kept dropping into BIOS / EZ Flash (fixed 2026-06-13)
+
+**Symptom:** most reboots landed in the ASUS BIOS / EZ Flash 3 instead of booting Arch.
+
+**Cause:** the BootOrder was `GRUB → UEFI HTTP → UEFI PXE` and there was **no fallback
+loader** at the universal path `\EFI\BOOT\BOOTX64.EFI`. ASUS firmware intermittently
+**forgets the custom GRUB NVRAM entry**; with no entry and no fallback, it fell through to
+**network boot** (which fails) → BIOS/EZ Flash.
+
+**Fix — 3 independent boot paths, no network in the order:**
+
+```sh
+# refresh GRUB NVRAM entry (also lays down blsuki.mod under /boot/grub/x86_64-efi)
+sudo grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB --recheck
+# install GRUB to the UNIVERSAL fallback path -> /boot/EFI/BOOT/BOOTX64.EFI
+sudo grub-install --target=x86_64-efi --efi-directory=/boot --removable --recheck
+sudo grub-mkconfig -o /boot/grub/grub.cfg
+# direct UEFI entry to the UKI (boots without GRUB at all)
+sudo efibootmgr -c -d /dev/nvme1n1 -p 1 -L "Arch Linux (UKI)" -l '\EFI\Linux\arch-linux.efi'
+sudo efibootmgr -o 0000,0001     # GRUB, then UKI-direct; network dropped from order
+```
+
+Resulting resilience:
+1. **GRUB** (`Boot0000`) → its `uki` command (`blsuki.mod`) discovers the UKI.
+2. **UKI direct** (`Boot0001` → `\EFI\Linux\arch-linux.efi`) — boots without GRUB.
+3. **Disk fallback** `\EFI\BOOT\BOOTX64.EFI` (GRUB) if all NVRAM entries are lost.
+
+- ⚠️ **`grub.cfg` has no static Arch `menuentry`** — the `uki` command (from `15_uki`,
+  provided by `blsuki.mod` in GRUB 2.14) generates the UKI entry at boot. `10_linux` is
+  intentionally **non-executable** so it can't emit broken `vmlinuz`+initramfs entries
+  (there's no loose initramfs — it's inside the UKI). Running `grub-mkconfig` is safe as
+  long as `15_uki` stays executable, `10_linux` stays non-executable, and `blsuki.mod`
+  exists under `/boot/grub/x86_64-efi/`.
+- ⚠️ In EZ Flash, **never select/flash a system file** (kernel/UKI/etc.) — it can brick the
+  BIOS. Just ESC and use Boot Override.
+- BIOS hardening (one-time): Fast Boot = Disabled, Secure Boot = Disabled (GRUB/UKI unsigned),
+  CSM = Disabled.
+
 ### SDDM (display manager)
 
 - `/etc/sddm.conf.d/10-wayland.conf` → Wayland greeter + `Current=tokyo-lock`
