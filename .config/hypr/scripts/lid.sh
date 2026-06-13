@@ -1,22 +1,37 @@
 #!/usr/bin/env bash
 # Behavior when closing/opening the laptop lid.
 # Usage: lid.sh close|open
+#
+# With an external monitor connected, systemd-logind already ignores the lid
+# switch (built-in: it won't suspend when another display is attached), so here
+# we just blank the internal panel and keep using the external. With no external
+# we lock and suspend.
 
 INTERNAL="eDP-1"
-EXTERNAL="$(hyprctl monitors -j | jq -r '.[] | select(.name|contains("eDP")|not).name' | head -1)"
+has_external() {
+    [ -n "$(hyprctl monitors all -j | jq -r \
+        '.[] | select(.name|contains("eDP")|not) | select(.disabled==false).name' | head -1)" ]
+}
+panel_is_off() {
+    [ "$(hyprctl monitors all -j | jq -r --arg m "$INTERNAL" \
+        '.[] | select(.name==$m) | .disabled')" = "true" ]
+}
 
 case "$1" in
     close)
-        if [ -n "$EXTERNAL" ]; then
-            # External monitor present → keep using it, turn off only the internal panel
+        if has_external; then
+            # Keep the external alive, turn off only the internal panel.
             hyprctl eval "hl.monitor({ output = \"$INTERNAL\", disabled = true })" >/dev/null 2>&1
         else
-            # No external → lock and suspend
             loginctl lock-session
             systemctl suspend
         fi
         ;;
     open)
-        hyprctl eval "hl.monitor({ output = \"$INTERNAL\", mode = \"1920x1080@144\", position = \"0x0\", scale = 1 })" >/dev/null 2>&1
+        # Re-enable the panel if it was off. hl.monitor can't clear a `disabled`
+        # rule on Hyprland 0.55, so reload (config has eDP enabled).
+        if panel_is_off; then
+            hyprctl reload >/dev/null 2>&1
+        fi
         ;;
 esac

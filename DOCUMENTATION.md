@@ -208,9 +208,9 @@ state and `hyprctl eval 'hl.…'` to act (Lua syntax). All notify via
 | `wallpaper.sh` | Start hyprpaper + apply the active wallpaper via IPC | run at login; falls back to the first image in the library |
 | `wallpaper-picker.sh` | rofi grid of thumbnails → set & persist the choice | updates the `current-wallpaper` symlink |
 | `monitor-scale.sh` | Cycle the focused monitor's scale 1→1.25→1.5→2 | picks the closest current step, advances one |
-| `monitor-mirror.sh` | Toggle mirror ↔ extend on the external | reads the real state from Hyprland's `mirrorOf` (survives unplug/replug) |
-| `monitor-internal.sh` | Turn the laptop panel off/on | **refuses to turn off the only screen** |
-| `lid.sh close\|open` | Lid logic | external present → only blank the internal; else lock + suspend |
+| `monitor-mirror.sh` | Toggle mirror ↔ extend on the external | mirror via `hl.monitor`; un-mirror via `hyprctl reload` (runtime monitor rules can't be cleared individually on 0.55). Reads the real `mirrorOf` state |
+| `monitor-internal.sh` | Turn the laptop panel off/on | **refuses to turn off the only screen**. Turning back ON uses `hyprctl reload` (a `disabled` rule can't be cleared with `hl.monitor` on 0.55) |
+| `lid.sh close\|open` | Lid logic | external present → only blank the internal (logind already ignores the lid when a 2nd display is attached); no external → lock + suspend. Re-enables the panel on open via reload |
 
 ---
 
