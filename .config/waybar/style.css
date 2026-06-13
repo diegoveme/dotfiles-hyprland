@@ -61,6 +61,7 @@ window#waybar {
 #memory,
 #temperature,
 #pulseaudio,
+#custom-airpods,
 #bluetooth,
 #network,
 #battery,
@@ -78,6 +79,9 @@ window#waybar {
 #memory     { color: @green; }
 #temperature { color: @yellow; }
 #pulseaudio { color: @foreground; }
+#custom-airpods { color: @foreground; }
+#custom-airpods.low { color: @red; }
+#custom-airpods.charging { color: @green; }
 #bluetooth  { color: @accent; }
 #network    { color: @accent; }
 

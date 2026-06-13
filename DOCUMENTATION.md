@@ -227,9 +227,15 @@ state and `hyprctl eval 'hl.…'` to act (Lua syntax). All notify via
 - **Note:** changing `persistent-workspaces` needs a **full waybar restart**
   (`reload_style_on_change` only reloads the CSS).
 
-**Right:** `cpu · memory · temperature · pulseaudio · bluetooth · network · battery · tray`.
+**Right:** `cpu · memory · temperature · pulseaudio · custom/airpods · bluetooth · network · battery · tray`.
 
 - CPU/RAM/temp **click → toggle btop** (class `sysmon`).
+- **`pulseaudio`** uses a **speaker** icon (`󰕿/󰖀/󰕾`) — the headphone/headset
+  icon mapping was removed on purpose so the volume isn't confused with the
+  AirPods battery (which uses the headphone icon `󰋋`). It's volume %, not charge.
+- **`custom/airpods`** shows the **real AirPods battery** — see
+  [AirPods battery](#airpods-battery) below. Click does the same as Bluetooth
+  (opens `bluetui`).
 - Bluetooth **click → toggle the Bluetooth menu** (`bluetui`, class `bt-menu`).
   The icon is muted when off and **turns green when a device is connected**
   (`format-connected` + `#bluetooth.connected` CSS). Hover lists connected
@@ -386,6 +392,45 @@ The Wi-Fi backend is **`iwd`** (not NetworkManager). The bar's network module
 so it doesn't duplicate. Hover shows the current ESSID/IP; click to pick a
 network.
 
+### AirPods battery
+
+The bar's **`custom/airpods`** module shows the **real** charge of connected
+AirPods. This is *not* the volume — the volume is the speaker icon next to it.
+
+**Why a custom module:** AirPods do **not** expose battery through standard
+BlueZ. Apple broadcasts the charge inside a proprietary **BLE advertisement**
+(manufacturer id `0x004C`), not the Bluetooth Battery Service — so
+`bluetoothctl info` never shows a `Battery` line and no `org.bluez …Battery1`
+interface ever appears (verified with `busctl tree org.bluez`). Enabling
+`Experimental = true` in `/etc/bluetooth/main.conf` gives battery reporting for
+*standard* headphones, but still not for AirPods. The only way is to scan and
+decode Apple's advertisement directly.
+
+**How it works (two pieces + a service):**
+
+- `~/.local/share/airstatus/airpods.py` — a small scanner that uses **`bleak`**
+  (`BleakScanner.discover`) to read the Apple advertisement, decodes left/right/
+  case charge and charging flags (logic adapted from
+  [AirStatus](https://github.com/delphiki/AirStatus), rewritten for the modern
+  bleak 3.x API — the original used the long-removed `discover`/`metadata` API
+  and pinned `bleak~=0.13`, which doesn't run on current Python). It writes the
+  latest reading to **`/tmp/airpods.json`** every ~10 s. `bleak` lives in a
+  **venv** (`~/.local/share/airstatus/venv`, not committed — recreate it).
+- `~/.config/waybar/scripts/airpods.sh` — the module's `exec`. Reads
+  `/tmp/airpods.json`, and prints waybar JSON: the headphone icon `󰋋` + the
+  **lowest** of the two buds, with the full L/R/Case breakdown in the tooltip.
+  If the file is missing or **older than 40 s** (AirPods gone), it prints empty
+  text so the module **collapses to nothing**. CSS: `.low` (≤20%) is red,
+  `.charging` is green.
+- **`airstatus.service`** (user unit, `~/.config/systemd/user/`) keeps the
+  scanner running (`systemctl --user enable --now airstatus.service`).
+
+**Notes / tradeoffs:** the scanner does a short active BLE scan every ~10 s
+(infrequent, to limit radio contention with A2DP audio). A bud that's out of the
+ear or in the case reports `-1` and is shown as `—`. The `on-click` opens the
+same `bluetui` menu as the Bluetooth icon. `bleak` is installed via pip into the
+venv (the official Python way), not pacman/AUR.
+
 ---
 
 ## 14. ASUS power (asusctl)
@@ -470,6 +515,13 @@ asus_nb_wmi
 - The mkinitcpio `MODULES=()` array was intentionally **left empty** — putting
   the module in the initramfs was tested and reverted (no real benefit, and it
   rebuilds the boot image for nothing).
+
+### Bluetooth battery — `/etc/bluetooth/main.conf`
+
+`Experimental = true` (under `[General]`, then `systemctl restart bluetooth`).
+Enables BlueZ's experimental D-Bus interfaces so **standard** Bluetooth
+headphones report battery. (AirPods still need the separate BLE scanner — see
+[AirPods battery](#13-network-iwd--impala).) Harmless; off by default upstream.
 
 ### UEFI boot entries — phantom cleanup
 

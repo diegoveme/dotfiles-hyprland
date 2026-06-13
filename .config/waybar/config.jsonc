@@ -10,7 +10,7 @@
   "margin-right": 10,
   "modules-left": ["hyprland/workspaces"],
   "modules-center": ["clock"],
-  "modules-right": ["cpu", "memory", "temperature", "pulseaudio", "bluetooth", "network", "battery", "tray"],
+  "modules-right": ["cpu", "memory", "temperature", "pulseaudio", "custom/airpods", "bluetooth", "network", "battery", "tray"],
 
   "hyprland/workspaces": {
     "on-click": "activate",
@@ -66,13 +66,18 @@
     "format": "{icon} {volume}%",
     "format-muted": "󰝟 mute",
     "format-icons": {
-      "headphone": "󰋋",
-      "headset": "󰋎",
       "default": ["󰕿", "󰖀", "󰕾"]
     },
     "scroll-step": 5,
     "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
     "tooltip-format": "{desc} — {volume}%"
+  },
+
+  "custom/airpods": {
+    "exec": "/home/diegoveme/.config/waybar/scripts/airpods.sh",
+    "return-type": "json",
+    "interval": 5,
+    "on-click": "/home/diegoveme/.config/hypr/scripts/toggle-app.sh bt-menu 'rfkill unblock bluetooth; kitty --class bt-menu -e bluetui'"
   },
 
   "bluetooth": {

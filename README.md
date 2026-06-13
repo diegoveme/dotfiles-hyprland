@@ -93,11 +93,36 @@ The touchpad also does **3-finger horizontal swipe → switch workspace**.
 
 - **Left:** 10 workspaces — current as a dot, in-use ones in a soft blue, empty
   ones dimmed.
-- **Right:** CPU · RAM · temp · audio · Bluetooth · network · battery · tray.
+- **Right:** CPU · RAM · temp · volume · AirPods · Bluetooth · network · battery · tray.
   CPU/RAM/temp open `btop` on click; **clicking the network icon opens the
   Wi-Fi menu** (`impala`, for the `iwd` backend) and **clicking the Bluetooth
   icon opens the Bluetooth menu** (`bluetui`) — both in a terminal. The
   Bluetooth icon turns green when a device is connected.
+- **AirPods battery** (🎧 icon) shows the real charge of connected AirPods —
+  see [AirPods battery](#airpods-battery) below. The volume uses a speaker icon
+  (🔊) so it isn't confused with it.
+
+## AirPods battery
+
+The bar shows the **real battery** of connected AirPods (lowest of the two buds,
+with full L/R/Case breakdown in the tooltip; the icon turns red below 20% and
+green while charging). AirPods don't report battery through standard BlueZ
+(Apple uses a proprietary BLE broadcast), so a tiny scanner decodes it:
+
+- `~/.local/share/airstatus/airpods.py` — scans Apple's BLE advertisement and
+  writes `/tmp/airpods.json` (decoding adapted from
+  [AirStatus](https://github.com/delphiki/AirStatus), rewritten for modern
+  `bleak`). It runs as the user service **`airstatus.service`**.
+- `~/.config/waybar/scripts/airpods.sh` — the waybar `custom/airpods` module
+  reads that file and renders the icon (empty/hidden when no AirPods are near).
+
+Setup (the `bleak` dependency lives in a venv, not committed):
+
+```sh
+cd ~/.local/share/airstatus
+python3 -m venv venv && ./venv/bin/pip install bleak
+systemctl --user enable --now airstatus.service
+```
 
 ## Wallpapers
 

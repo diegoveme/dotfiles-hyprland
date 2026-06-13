@@ -1,0 +1,11 @@
+[Unit]
+Description=AirPods battery scanner (writes /tmp/airpods.json for waybar)
+After=bluetooth.target
+
+[Service]
+ExecStart=%h/.local/share/airstatus/venv/bin/python %h/.local/share/airstatus/airpods.py
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target
