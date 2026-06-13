@@ -172,7 +172,7 @@ hl.config({
 
 hl.config({
     misc = {
-        force_default_wallpaper = 0,    -- 0 = no built-in anime wallpaper underneath (we use hyprpaper)
+        force_default_wallpaper = 0,    -- 0 = no built-in anime wallpaper underneath (we use swaybg)
         disable_hyprland_logo   = true, -- no Hyprland logo / default background showing through
     },
 })
