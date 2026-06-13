@@ -18,7 +18,8 @@ choice="$(gen | rofi -dmenu -i -p "Wallpaper" -theme-str 'listview { columns: 3;
 WP="$DIR/$choice"
 [ -f "$WP" ] || exit 1
 
-# Apply and persist
+# Apply and persist. swaybg covers every monitor (incl. external); restart it
+# to swap the image.
 ln -sf "$WP" "$CURRENT"
-pidof hyprpaper >/dev/null 2>&1 || (hyprpaper >/dev/null 2>&1 & sleep 1)
-hyprctl hyprpaper wallpaper "eDP-1,$WP" >/dev/null 2>&1
+pkill -x swaybg 2>/dev/null
+setsid swaybg -i "$WP" -m fill >/dev/null 2>&1 &

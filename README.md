@@ -87,6 +87,11 @@ The touchpad also does **3-finger horizontal swipe → switch workspace**.
 - An external monitor **extends on its own** (as a separate screen) when plugged
   in. Use `Super + Ctrl + M` only if you want to **mirror** instead; press it
   again to go back to extending.
+- The bar, wallpaper and notifications all show on **both** monitors; the app
+  launcher and notifications appear on whichever screen you're using.
+- **Tip:** plug the external in **extended** (the default). If you connect it
+  while mirroring, the external can come up with no bar/wallpaper (it never gets
+  its own output); unplug and replug the cable to fix it.
 - On **closing the lid**: if there is an external, it keeps going on the external; if not, it locks and suspends.
 
 **Volume and brightness** keys show an OSD (swayosd).
@@ -149,6 +154,7 @@ When you actually need the AirPods mic (e.g. away from the laptop), press
 - Change them with **`Super + Ctrl + Space`** (picker with thumbnails).
 - The library is in `~/.config/wallpapers/`. Add images there and they show up automatically.
 - The active wallpaper is the `~/.config/hypr/current-wallpaper` link.
+- Rendered with **swaybg**, which covers every monitor (internal + external).
 
 ## Auto-lock
 
@@ -198,7 +204,7 @@ configs in this repo pick it up.
 ```sh
 sudo pacman -S --needed \
     hyprland waybar btop kitty rofi-wayland \
-    hyprlock hypridle hyprpaper dunst swayosd \
+    hyprlock hypridle swaybg dunst swayosd \
     grim slurp wl-clipboard libnotify brightnessctl playerctl impala \
     bluez bluez-utils \
     wf-recorder tesseract tesseract-data-eng tesseract-data-spa jq \
@@ -244,5 +250,5 @@ sudo cp -r usr/share/sddm/themes/tokyo-lock /usr/share/sddm/themes/
 > Type **`keybinds`** in any terminal to see the full list of shortcuts.
 
 > The files use absolute paths to `/home/diegoveme`. Adjust them if your user
-> is different (in `hypr/scripts/*`, `hyprpaper.conf`, `hyprlock.conf`, the autostart
+> is different (in `hypr/scripts/*`, `hyprlock.conf`, the autostart
 > and `fastfetch/config.jsonc`).

@@ -101,7 +101,7 @@ the **Lua config format** (`hl.bind`, `hl.config`, `hl.monitor`, `hl.env`,
   resize — handy for floating windows).
 - **`misc.force_default_wallpaper = 0` + `disable_hyprland_logo = true`** — this
   is important: by default Hyprland paints its own random anime/mascot wallpaper
-  *underneath*. With hyprpaper on top, any gap/transition let the built-in one
+  *underneath*. With the wallpaper on top, any gap/transition let the built-in one
   show through ("a wallpaper behind the wallpaper"). Setting these to 0/true
   removes the built-in background entirely.
 
@@ -137,7 +137,7 @@ swipe can only do stepped zoom. Hence pinch is the native, fluid touchpad zoom.
   the compositor is fully up).
 - `hypridle` — idle lock / screen-off daemon.
 - `swayosd-server` — the volume/brightness OSD daemon.
-- `wallpaper.sh` — starts hyprpaper and applies the wallpaper.
+- `wallpaper.sh` — starts swaybg (wallpaper on all monitors).
 - dunst is **not** autostarted here — it's D-Bus activated on the first
   notification (and runs as `dunst.service`).
 
@@ -205,7 +205,7 @@ state and `hyprctl eval 'hl.…'` to act (Lua syntax). All notify via
 | `zoom.sh in\|out\|reset` | Cursor-following screen zoom in 0.5 steps | sets `cursor.zoom_factor` via `hl.config` |
 | `toggle-app.sh <class> '<cmd>'` | Open the window if closed, **close it if open** | used by waybar; **race-safe** (see [§5](#5-top-bar-waybar)) |
 | `toggle-floaters.sh` | Hide/show **all floaters** on the current workspace | stashes them to `special:stash` and back — for `Super+H` |
-| `wallpaper.sh` | Start hyprpaper + apply the active wallpaper via IPC | run at login; falls back to the first image in the library |
+| `wallpaper.sh` | Start swaybg with the active wallpaper (covers all monitors) | run at login; falls back to the first image in the library |
 | `wallpaper-picker.sh` | rofi grid of thumbnails → set & persist the choice | updates the `current-wallpaper` symlink |
 | `monitor-scale.sh` | Cycle the focused monitor's scale 1→1.25→1.5→2 | picks the closest current step, advances one |
 | `monitor-mirror.sh` | Toggle mirror ↔ extend on the external | mirror via `hl.monitor`; un-mirror via `hyprctl reload` (runtime monitor rules can't be cleared individually on 0.55). Reads the real `mirrorOf` state |
@@ -291,13 +291,15 @@ fastfetch and the prompt). `Super+L` locks.
 
 ## 7. Wallpaper
 
-**`hyprpaper`** is the daemon. `hyprpaper.conf` preloads
-`~/.config/hypr/current-wallpaper` (a **symlink** to the active image).
+**`swaybg`** is the engine. The active image is `~/.config/hypr/current-wallpaper`
+(a **symlink**). swaybg covers **every monitor automatically**, including
+externally-connected ones — `hyprpaper` was dropped because it fails to bind
+hotplugged displays (reports "Invalid monitor"), leaving the external screen
+with no wallpaper.
 
-- `wallpaper.sh` (autostart) launches hyprpaper and applies the wallpaper via
-  IPC (`hyprctl hyprpaper wallpaper ...`).
+- `wallpaper.sh` (autostart) starts `swaybg -i <current> -m fill`.
 - `wallpaper-picker.sh` (`Super+Ctrl+Space`) shows a rofi thumbnail grid, points
-  the symlink at your choice and applies it.
+  the symlink at your choice and restarts swaybg with it.
 - The library is `~/.config/wallpapers/`; drop images there and they appear.
   Personal wallpapers are **git-ignored** (only the Tokyo Night gradient is
   committed) to keep the repo light.
@@ -513,7 +515,7 @@ with custom icons in `~/.config/wlogout/icons/`.
 - **UKI date is deterministic:** a fixed timestamp on `arch-linux.efi` is normal;
   the contents do change on `mkinitcpio -p linux` (verify by sha256, not mtime).
 - **Absolute paths:** several files hardcode `/home/diegoveme`
-  (`hypr/scripts/*`, `hyprpaper.conf`, `hyprlock.conf`, the autostart,
+  (`hypr/scripts/*`, `hyprlock.conf`, the autostart,
   `fastfetch/config.jsonc`). Adjust them for a different user.
 - **SDDM background:** `tokyo-lock/background.jpg` is a blurred copy of the
   wallpaper; regenerate it with ffmpeg if you change the wallpaper.

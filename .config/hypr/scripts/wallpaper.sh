@@ -1,20 +1,19 @@
 #!/usr/bin/env bash
-# Starts hyprpaper and applies the current wallpaper (via IPC).
-# The active wallpaper is the ~/.config/hypr/current-wallpaper link.
+# Sets the wallpaper with swaybg. swaybg covers ALL monitors automatically,
+# including externally-connected ones (hyprpaper fails to bind hotplugged
+# displays — it reports "Invalid monitor"). The active wallpaper is the
+# ~/.config/hypr/current-wallpaper symlink.
 
 CURRENT="$HOME/.config/hypr/current-wallpaper"
 WP="$(readlink -f "$CURRENT")"
 
-# If there is no valid link, use the first one in the library.
+# If there is no valid link, use the first image in the library.
 if [ -z "$WP" ] || [ ! -f "$WP" ]; then
     WP="$(find "$HOME/.config/wallpapers" -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' \) | sort | head -1)"
     ln -sf "$WP" "$CURRENT"
 fi
 
-pidof hyprpaper >/dev/null 2>&1 || (hyprpaper >/dev/null 2>&1 &)
-
+# Replace any running instance, then start fresh covering every output.
+pkill -x swaybg 2>/dev/null
 sleep 0.2
-for i in $(seq 1 20); do
-    hyprctl hyprpaper wallpaper "eDP-1,$WP" >/dev/null 2>&1 && exit 0
-    sleep 0.3
-done
+exec swaybg -i "$WP" -m fill

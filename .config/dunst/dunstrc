@@ -12,6 +12,9 @@
     horizontal_padding = 14
     text_icon_padding = 10
     origin = top-right
+    # Show notifications on the monitor the mouse is on (so they appear on
+    # whichever screen you're using, internal or external).
+    follow = mouse
     icon_position = left
     max_icon_size = 48
     gap_size = 8

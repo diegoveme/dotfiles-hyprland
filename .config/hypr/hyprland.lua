@@ -44,7 +44,7 @@ hl.on("hyprland.start", function ()
   hl.exec_cmd("sleep 2 && waybar") -- status bar (delayed: if it starts too early, it crashes)
   hl.exec_cmd("hypridle")          -- auto-lock / screen off on inactivity
   hl.exec_cmd("swayosd-server")    -- volume / brightness OSD
-  hl.exec_cmd("/home/diegoveme/.config/hypr/scripts/wallpaper.sh")  -- wallpaper (hyprpaper + IPC)
+  hl.exec_cmd("/home/diegoveme/.config/hypr/scripts/wallpaper.sh")  -- wallpaper (swaybg, all monitors)
   -- notifications: dunst (managed by systemd, dunst.service)
 end)
 
