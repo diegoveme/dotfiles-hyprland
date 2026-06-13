@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-# Toggles between extending and mirroring the internal screen onto the external one.
+# Toggles the external monitor between EXTENDING and MIRRORING the internal one.
+# State is read from Hyprland itself (the monitor's `mirrorOf` field), so it
+# stays correct even after unplugging/replugging — no stale state file.
 
-STATE="$HOME/.config/hypr/.mirror-state"
 INTERNAL="$(hyprctl monitors -j | jq -r '.[] | select(.name|contains("eDP")).name' | head -1)"
 EXTERNAL="$(hyprctl monitors -j | jq -r '.[] | select(.name|contains("eDP")|not).name' | head -1)"
 
@@ -10,14 +11,16 @@ if [ -z "$EXTERNAL" ]; then
     exit 1
 fi
 
-if [ -f "$STATE" ]; then
-    # Was mirroring → go back to extending
-    hyprctl eval "hl.monitor({ output = \"$EXTERNAL\", mode = \"preferred\", position = \"auto\", scale = 1 })" >/dev/null 2>&1
-    rm -f "$STATE"
-    notify-send -u low "󰍹  Screens extended" "$EXTERNAL" 2>/dev/null
+# Is the external currently mirroring something? (mirrorOf != "none")
+MIRRORING="$(hyprctl monitors -j | jq -r --arg ext "$EXTERNAL" \
+    '.[] | select(.name==$ext) | .mirrorOf')"
+
+if [ "$MIRRORING" != "none" ] && [ -n "$MIRRORING" ]; then
+    # Currently mirroring → extend (clear mirror, place it next to the internal)
+    hyprctl keyword monitor "$EXTERNAL,preferred,auto,1,mirror,none" >/dev/null 2>&1
+    notify-send -u low "󰍹  Screens extended" "$EXTERNAL is now a separate screen" 2>/dev/null
 else
-    # Enable mirroring of the internal onto the external
+    # Currently extending → mirror the internal onto the external
     hyprctl eval "hl.monitor({ output = \"$EXTERNAL\", mode = \"preferred\", position = \"auto\", scale = 1, mirror = \"$INTERNAL\" })" >/dev/null 2>&1
-    touch "$STATE"
     notify-send -u low "󰍹  Mirror enabled" "$EXTERNAL ← $INTERNAL" 2>/dev/null
 fi

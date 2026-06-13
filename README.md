@@ -84,7 +84,9 @@ The touchpad also does **3-finger horizontal swipe → switch workspace**.
 | `Super + Ctrl + M`     | Mirror / extend the external monitor     |
 | `Super + Ctrl + D`     | Turn the laptop panel off / on           |
 
-- An external monitor **extends on its own** when plugged in.
+- An external monitor **extends on its own** (as a separate screen) when plugged
+  in. Use `Super + Ctrl + M` only if you want to **mirror** instead; press it
+  again to go back to extending.
 - On **closing the lid**: if there is an external, it keeps going on the external; if not, it locks and suspends.
 
 **Volume and brightness** keys show an OSD (swayosd).

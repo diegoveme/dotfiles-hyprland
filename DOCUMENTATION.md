@@ -79,7 +79,9 @@ the **Lua config format** (`hl.bind`, `hl.config`, `hl.monitor`, `hl.env`,
 - `eDP-1` is pinned to **1920x1080@144, scale = 1** (native, no fractional
   scaling — the panel is 1080p and 1× looks correct).
 - A catch-all `output = ""` rule makes **any external monitor** light up at its
-  preferred mode and **extend automatically** when plugged in.
+  preferred mode and **extend automatically** (separate screen) when plugged in.
+  Mirroring is **opt-in** via `Super + Ctrl + M`; press again to go back to
+  extending.
 
 ### Environment variables (`hl.env`)
 
@@ -206,7 +208,7 @@ state and `hyprctl eval 'hl.…'` to act (Lua syntax). All notify via
 | `wallpaper.sh` | Start hyprpaper + apply the active wallpaper via IPC | run at login; falls back to the first image in the library |
 | `wallpaper-picker.sh` | rofi grid of thumbnails → set & persist the choice | updates the `current-wallpaper` symlink |
 | `monitor-scale.sh` | Cycle the focused monitor's scale 1→1.25→1.5→2 | picks the closest current step, advances one |
-| `monitor-mirror.sh` | Toggle mirror ↔ extend on the external | stateful via `~/.config/hypr/.mirror-state` |
+| `monitor-mirror.sh` | Toggle mirror ↔ extend on the external | reads the real state from Hyprland's `mirrorOf` (survives unplug/replug) |
 | `monitor-internal.sh` | Turn the laptop panel off/on | **refuses to turn off the only screen** |
 | `lid.sh close\|open` | Lid logic | external present → only blank the internal; else lock + suspend |
 
