@@ -8,7 +8,7 @@
   "margin-top": 6,
   "margin-left": 10,
   "margin-right": 10,
-  "modules-left": ["hyprland/workspaces"],
+  "modules-left": ["hyprland/workspaces", "custom/focusmon"],
   "modules-center": ["clock"],
   "modules-right": ["cpu", "memory", "temperature", "pulseaudio", "custom/airpods", "bluetooth", "network", "battery", "tray"],
 
@@ -25,6 +25,13 @@
       "1": [], "2": [], "3": [], "4": [], "5": [],
       "6": [], "7": [], "8": [], "9": [], "10": []
     }
+  },
+
+  "custom/focusmon": {
+    "exec": "/home/diegoveme/.config/hypr/scripts/focusmon.sh",
+    "return-type": "json",
+    "restart-interval": 3,
+    "tooltip": true
   },
 
   "clock": {

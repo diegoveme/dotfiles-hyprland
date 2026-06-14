@@ -211,6 +211,7 @@ state and `hyprctl eval 'hl.…'` to act (Lua syntax). All notify via
 | `monitor-mirror.sh` | Toggle mirror ↔ extend on the external | mirror via `hl.monitor`; un-mirror via `hyprctl reload` (runtime monitor rules can't be cleared individually on 0.55). Reads the real `mirrorOf` state |
 | `monitor-internal.sh` | Turn the laptop panel off/on | **refuses to turn off the only screen**. Turning back ON uses `hyprctl reload` (a `disabled` rule can't be cleared with `hl.monitor` on 0.55) |
 | `lid.sh close\|open` | Lid logic | external present → only blank the internal (logind already ignores the lid when a 2nd display is attached); no external → lock + suspend. Re-enables the panel on open via reload |
+| `focusmon.sh` | waybar module: which monitor has keyboard focus | streams JSON; updates instantly off Hyprland's `socket2` events (`socat`). Empty with a single monitor |
 
 ---
 
@@ -228,6 +229,17 @@ state and `hyprctl eval 'hl.…'` to act (Lua syntax). All notify via
   accent. This is the "tenuous color so you can tell which are in use".
 - **Note:** changing `persistent-workspaces` needs a **full waybar restart**
   (`reload_style_on_change` only reloads the CSS).
+
+**Left — focused-monitor indicator (`custom/focusmon`):**
+
+- Right after the workspaces, **only when two monitors are connected**, a label
+  shows **where keyboard focus is**: `󰌢 Laptop` (blue) or `󰍹 External` (green).
+- Driven by `scripts/focusmon.sh`, a **streaming** module: it prints the initial
+  state, then listens to Hyprland's event socket (`socket2`, via `socat`) and
+  re-emits on every `focusedmon`/monitor add-remove — so it changes **instantly**
+  (no polling). With one monitor it emits empty and the module collapses.
+- One instance runs per bar (so both screens show the indicator); `socat` must be
+  installed.
 
 **Right:** `cpu · memory · temperature · pulseaudio · custom/airpods · bluetooth · network · battery · tray`.
 

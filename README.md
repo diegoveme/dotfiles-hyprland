@@ -99,7 +99,9 @@ The touchpad also does **3-finger horizontal swipe → switch workspace**.
 ## Top bar (waybar)
 
 - **Left:** 10 workspaces — current as a dot, in-use ones in a soft blue, empty
-  ones dimmed.
+  ones dimmed. Next to them, a **focused-monitor indicator** (only with two
+  screens): `󰌢 Laptop` (blue) or `󰍹 External` (green), showing where keyboard
+  focus is. It updates instantly (driven by Hyprland events).
 - **Right:** CPU · RAM · temp · volume · AirPods · Bluetooth · network · battery · tray.
   CPU/RAM/temp open `btop` on click; **clicking the network icon opens the
   Wi-Fi menu** (`impala`, for the `iwd` backend) and **clicking the Bluetooth
@@ -204,7 +206,7 @@ configs in this repo pick it up.
 ```sh
 sudo pacman -S --needed \
     hyprland waybar btop kitty rofi-wayland \
-    hyprlock hypridle swaybg dunst swayosd \
+    hyprlock hypridle swaybg dunst swayosd socat \
     grim slurp wl-clipboard libnotify brightnessctl playerctl impala \
     bluez bluez-utils \
     wf-recorder tesseract tesseract-data-eng tesseract-data-spa jq \
