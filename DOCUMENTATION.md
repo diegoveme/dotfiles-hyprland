@@ -29,6 +29,7 @@ Deep reference for this setup — **what** each piece is, **why** it exists, and
 16. [Known issues & pending](#16-known-issues--pending)
 17. [Maintenance & gotchas](#17-maintenance--gotchas)
 18. [System-level changes (outside this repo)](#18-system-level-changes-outside-this-repo)
+19. [Media viewers & file associations (Dolphin/MIME)](#19-media-viewers--file-associations-dolphinmime)
 
 ---
 
@@ -639,6 +640,13 @@ Resulting resilience:
 - Theme installed to `/usr/share/sddm/themes/tokyo-lock/` (tracked here under
   `usr/`). Add a blurred `background.jpg` after installing.
 
+### XDG application menu — `/etc/xdg/menus/`
+
+`applications.menu` (+ `hyprland-applications.menu` for the session's
+`XDG_MENU_PREFIX`), tracked here under `etc/xdg/menus/`. **Required** — without it
+KDE/Dolphin's service cache builds empty and "Open with" lists nothing. Full
+explanation in [§19](#19-media-viewers--file-associations-dolphinmime).
+
 ### asusctl / ROG Control Center — g14 repo
 
 Added to `/etc/pacman.conf`:
@@ -658,3 +666,75 @@ Server = https://arch.asus-linux.org
 Rebuild it with `sassc` from a Tokyo Night GTK theme generator using the **dark**
 variant + **black** tweak; the `gtk-3.0/4.0`, `Kvantum`, `qt5ct`, `qt6ct` configs
 in this repo then pick it up. See [§9](#9-theming-tokyo-night-everywhere).
+
+---
+
+## 19. Media viewers & file associations (Dolphin/MIME)
+
+**Apps:** `mpv` (video/audio — every format via ffmpeg) and `imv` (images,
+Wayland-native: png, jpg, webp, gif, svg, tiff, bmp, heic/heif, avif, jxl, qoi —
+`imv`'s backends ship as hard deps, so no codec hunting). Both from the official
+repos (`extra`):
+
+```sh
+sudo pacman -S --needed mpv imv
+```
+
+**Defaults** are set in `~/.config/mimeapps.list` (tracked under `.config/`):
+images → `imv.desktop`, video → `mpv.desktop`. Set/redo with:
+
+```sh
+for m in image/png image/jpeg image/webp image/gif image/bmp image/tiff \
+         image/svg+xml image/heif image/heic image/avif image/jxl image/qoi; do
+  xdg-mime default imv.desktop "$m"; done
+for m in video/mp4 video/x-matroska video/webm video/quicktime video/x-msvideo \
+         video/mpeg video/x-flv video/3gpp; do
+  xdg-mime default mpv.desktop "$m"; done
+```
+
+### The real gotcha — Dolphin showed *no* apps and opened nothing
+
+Double-clicking an image did nothing, and right-click → **Open with** was
+**empty** (not even browsers). Three layered causes, the last being the real one:
+
+1. **Images were associated with Brave** (the browser) instead of a viewer —
+   fixed by the `xdg-mime default` block above.
+2. **`/usr/share/applications/imv.desktop` has `NoDisplay=true`**, which hides it
+   from "Open with" *and* disqualifies it as a default. Fix: a visible copy with
+   that line stripped lives in `.local/share/applications/imv.desktop` (a
+   user-level file shadows the system one):
+   ```sh
+   sed '/^NoDisplay=/d' /usr/share/applications/imv.desktop \
+     > ~/.local/share/applications/imv.desktop
+   ```
+3. **Root cause — no XDG application menu existed.** A bare Hyprland install (no
+   Plasma) ships **no** `/etc/xdg/menus/applications.menu`; no package provides
+   one without `plasma-workspace`. KDE/Dolphin build their service cache
+   (`~/.cache/ksycoca6*`) from that menu, so with it missing the cache built
+   **with 0 applications indexed** → nothing to offer in "Open with", and no
+   default app could be resolved. The session's `XDG_MENU_PREFIX=hyprland-` means
+   it actually looks for `hyprland-applications.menu`.
+
+   **Fix:** ship a standard freedesktop menu (`<DefaultAppDirs/>` +
+   `<Include><All/></Include>` so every `.desktop` is indexed) at both names,
+   tracked under `etc/xdg/menus/`:
+   ```sh
+   sudo mkdir -p /etc/xdg/menus
+   sudo cp etc/xdg/menus/applications.menu          /etc/xdg/menus/
+   sudo cp etc/xdg/menus/hyprland-applications.menu /etc/xdg/menus/   # for XDG_MENU_PREFIX
+   kbuildsycoca6 --noincremental
+   ```
+   After this, `ksycoca` went from **0 → 145 apps** and "Open with" works for
+   *every* app, not just media.
+
+**Diagnostics that pinned it down** (`ksycoca` stores strings as UTF-16, so use
+`strings -e l`):
+
+```sh
+KSC=$(ls -t ~/.cache/ksycoca6* | head -1)
+strings -e l "$KSC" | grep -c 'applications/.*\.desktop'   # 0 = broken cache
+xdg-mime query default image/png                           # should be imv.desktop
+gio mime image/png                                         # GLib's view (independent of ksycoca)
+```
+
+> Restart Dolphin (or re-login so `kded6` reloads) after rebuilding `ksycoca`.

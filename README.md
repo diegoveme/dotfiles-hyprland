@@ -24,10 +24,12 @@ Unified theme throughout: **Tokyo Night**.
 | `.config/wallpapers` | Wallpaper library (the active one is `hypr/current-wallpaper`)     |
 | `bashrc`             | `.bashrc` (loads oh-my-posh + fastfetch)                          |
 | `.local/bin/keybinds`| Command that shows all shortcuts (type `keybinds`)               |
-| `.local/share/applications` | `NoDisplay` overrides that hide junk CLI/config entries from the launcher |
+| `.local/share/applications` | `NoDisplay` overrides that hide junk CLI/config entries from the launcher (+ a visible `imv` entry) |
+| `.config/mimeapps.list` | Default apps per file type (images → `imv`, video → `mpv`)      |
 | `.config/gtk-3.0` `.config/gtk-4.0` | GTK dark theme settings (Tokyonight-Dark)         |
 | `.config/Kvantum` `.config/qt5ct` `.config/qt6ct` | Qt dark theme (Kvantum)             |
 | `etc/sddm.conf.d`    | SDDM config (Wayland greeter + theme)                            |
+| `etc/xdg/menus`      | XDG application menu — required so KDE/Dolphin can list apps (see below) |
 | `usr/share/sddm/themes/tokyo-lock` | Custom SDDM login theme (hyprlock-style)          |
 
 ## Shortcuts (Super key = Windows)
@@ -158,6 +160,19 @@ When you actually need the AirPods mic (e.g. away from the laptop), press
 - The active wallpaper is the `~/.config/hypr/current-wallpaper` link.
 - Rendered with **swaybg**, which covers every monitor (internal + external).
 
+## Media viewers & file types
+
+- **Images** open in **`imv`** (Wayland-native: png, jpg, webp, gif, svg, tiff,
+  bmp, heic/heif, avif, jxl, qoi). **Video/audio** open in **`mpv`** (any format
+  via ffmpeg). Both are the default apps (`.config/mimeapps.list`).
+- ⚠️ **Dolphin needs an XDG application menu to list any app.** A bare
+  Hyprland install (no Plasma) ships **no** `/etc/xdg/menus/applications.menu`,
+  so KDE's service cache (`ksycoca`) builds **empty** and "Open with" shows
+  nothing / double-click does nothing. This repo provides that menu under
+  `etc/xdg/menus/` — see [`DOCUMENTATION.md` §19](DOCUMENTATION.md). `imv`'s
+  packaged `.desktop` also has `NoDisplay=true`, so a visible copy lives in
+  `.local/share/applications/imv.desktop`.
+
 ## Auto-lock
 
 Lock after **5 min**, screen off after **6 min** (hypridle).
@@ -209,6 +224,7 @@ sudo pacman -S --needed \
     hyprlock hypridle swaybg dunst swayosd socat \
     grim slurp wl-clipboard libnotify brightnessctl playerctl impala \
     bluez bluez-utils \
+    dolphin mpv imv \
     wf-recorder tesseract tesseract-data-eng tesseract-data-spa jq \
     fastfetch ttf-jetbrains-mono-nerd noto-fonts-emoji \
     sddm weston \
@@ -236,10 +252,12 @@ chmod +x bluetui && sudo install -m 755 bluetui /usr/local/bin/bluetui
 
 ```sh
 cp -r .config/* ~/.config/
+cp .config/mimeapps.list ~/.config/
 cp bashrc ~/.bashrc
 mkdir -p ~/.local/bin && cp .local/bin/keybinds ~/.local/bin/
 
-# Hide junk CLI/config entries from the app launcher (NoDisplay overrides):
+# Hide junk CLI/config entries from the app launcher (NoDisplay overrides) +
+# the visible imv entry:
 mkdir -p ~/.local/share/applications && cp .local/share/applications/*.desktop ~/.local/share/applications/
 update-desktop-database ~/.local/share/applications
 
@@ -247,6 +265,10 @@ update-desktop-database ~/.local/share/applications
 sudo cp -r etc/sddm.conf.d/* /etc/sddm.conf.d/
 sudo cp -r usr/share/sddm/themes/tokyo-lock /usr/share/sddm/themes/
 # then add a background.jpg (blurred wallpaper) into the theme folder
+
+# XDG menu — REQUIRED for Dolphin/KDE to list apps in "Open with":
+sudo mkdir -p /etc/xdg/menus && sudo cp etc/xdg/menus/*.menu /etc/xdg/menus/
+kbuildsycoca6 --noincremental   # rebuild KDE's service cache (ksycoca)
 ```
 
 > Type **`keybinds`** in any terminal to see the full list of shortcuts.

@@ -1,0 +1,98 @@
+<!DOCTYPE Menu PUBLIC "-//freedesktop//DTD Menu 1.0//EN"
+ "http://www.freedesktop.org/standards/menu-spec/1.0/menu.dtd">
+<Menu>
+  <Name>Applications</Name>
+  <Directory>kde-main.directory</Directory>
+  <!-- Search the standard locations for .desktop files -->
+  <DefaultAppDirs/>
+  <DefaultDirectoryDirs/>
+  <DefaultLayout>
+    <Merge type="menus"/>
+    <Merge type="files"/>
+  </DefaultLayout>
+
+  <!-- Include every application so KService (Open With, default apps) sees them all -->
+  <Include>
+    <All/>
+  </Include>
+
+  <Menu>
+    <Name>Multimedia</Name>
+    <Directory>kf6-multimedia.directory</Directory>
+    <Include>
+      <And>
+        <Category>AudioVideo</Category>
+      </And>
+    </Include>
+  </Menu>
+
+  <Menu>
+    <Name>Graphics</Name>
+    <Directory>kf6-graphics.directory</Directory>
+    <Include>
+      <And>
+        <Category>Graphics</Category>
+      </And>
+    </Include>
+  </Menu>
+
+  <Menu>
+    <Name>Internet</Name>
+    <Directory>kf6-internet.directory</Directory>
+    <Include>
+      <And>
+        <Category>Network</Category>
+      </And>
+    </Include>
+  </Menu>
+
+  <Menu>
+    <Name>Utilities</Name>
+    <Directory>kf6-utilities.directory</Directory>
+    <Include>
+      <And>
+        <Category>Utility</Category>
+      </And>
+    </Include>
+  </Menu>
+
+  <Menu>
+    <Name>System</Name>
+    <Directory>kf6-system.directory</Directory>
+    <Include>
+      <And>
+        <Category>System</Category>
+      </And>
+    </Include>
+  </Menu>
+
+  <Menu>
+    <Name>Development</Name>
+    <Directory>kf6-development.directory</Directory>
+    <Include>
+      <And>
+        <Category>Development</Category>
+      </And>
+    </Include>
+  </Menu>
+
+  <Menu>
+    <Name>Office</Name>
+    <Directory>kf6-office.directory</Directory>
+    <Include>
+      <And>
+        <Category>Office</Category>
+      </And>
+    </Include>
+  </Menu>
+
+  <Menu>
+    <Name>Settingsmenu</Name>
+    <Directory>kf6-settingsmenu.directory</Directory>
+    <Include>
+      <And>
+        <Category>Settings</Category>
+      </And>
+    </Include>
+  </Menu>
+</Menu>
